@@ -242,6 +242,7 @@ async function loadNotes() {
     const data = await callNotesApi('load');
 
     if (!data || data.length === 0) {
+
       notesList.innerHTML =
         '<p class="empty">No notes yet. Add the first one!</p>';
 
@@ -257,96 +258,111 @@ async function loadNotes() {
           <span class="author-badge ${
             note.author === 'Him' ? 'him' : 'you'
           }">
-
             ${escapeHtml(note.author || 'Someone')}
-
           </span>
 
+          <div class="note-top-right">
 
-          <div class="note-meta">
+            <div class="note-meta">
 
-            ${
-              note.pinned
-                ? '<span class="pinned-label">📌 Pinned</span>'
-                : ''
-            }
+              ${
+                note.pinned
+                  ? '<span class="pinned-label">📌 Pinned</span>'
+                  : ''
+              }
 
-            <small>
-              ${new Date(note.created_at).toLocaleString()}
-            </small>
+              <small>
+                ${new Date(note.created_at).toLocaleString()}
+              </small>
+
+            </div>
+
+            <div class="note-menu-wrapper">
+
+              <button
+                class="menu-btn"
+                data-id="${note.id}"
+                aria-label="Note menu">
+                ⋮
+              </button>
+
+              <div
+                class="note-menu hidden"
+                data-menu-id="${note.id}">
+
+                <button
+                  class="menu-pin-btn"
+                  data-id="${note.id}"
+                  data-pinned="${note.pinned}">
+                  ${note.pinned ? '📌 Unpin' : '📌 Pin'}
+                </button>
+
+                <button
+                  class="menu-edit-btn"
+                  data-id="${note.id}">
+                  Edit
+                </button>
+
+                <button
+                  class="menu-delete-btn"
+                  data-id="${note.id}">
+                  Delete
+                </button>
+
+              </div>
+
+            </div>
 
           </div>
 
         </div>
 
         <p class="note-text">
-  ${escapeHtml(note.content)}
-</p>
-
-        <div class="note-actions">
-
-          <button
-            class="pin-btn ${note.pinned ? 'pinned' : ''}"
-            data-id="${note.id}"
-            data-pinned="${note.pinned}">
-            ${note.pinned ? '📌 Unpin' : '📌 Pin'}
-          </button>
-
-          <button
-            class="edit-btn"
-            data-id="${note.id}">
-            Edit
-          </button>
-
-          <button
-            class="delete-btn"
-            data-id="${note.id}">
-            Delete
-          </button>
-
-        </div>
+          ${escapeHtml(note.content)}
+        </p>
 
       </div>
 
     `).join('');
 
 
-    // ========== EDIT BUTTONS ==========
+    // ========== NOTE MENUS ==========
 
-    document.querySelectorAll('.edit-btn').forEach(btn => {
+    document.querySelectorAll('.menu-btn').forEach(btn => {
 
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
 
-        openEdit(
-          btn.dataset.id,
-          data
+        e.stopPropagation();
+
+        const id = btn.dataset.id;
+
+        const menu = document.querySelector(
+          `[data-menu-id="${id}"]`
         );
+
+        // Close other menus
+        document.querySelectorAll('.note-menu').forEach(otherMenu => {
+
+          if (otherMenu !== menu) {
+            otherMenu.classList.add('hidden');
+          }
+
+        });
+
+        menu.classList.toggle('hidden');
 
       });
 
     });
 
 
-    // ========== DELETE BUTTONS ==========
+    // ========== MENU PIN ==========
 
-    document.querySelectorAll('.delete-btn').forEach(btn => {
+    document.querySelectorAll('.menu-pin-btn').forEach(btn => {
 
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', async (e) => {
 
-        deleteNote(
-          btn.dataset.id
-        );
-
-      });
-
-    });
-
-
-    // ========== PIN BUTTONS ==========
-
-    document.querySelectorAll('.pin-btn').forEach(btn => {
-
-      btn.addEventListener('click', async () => {
+        e.stopPropagation();
 
         const id = btn.dataset.id;
 
@@ -364,20 +380,54 @@ async function loadNotes() {
 
         } catch (error) {
 
-          console.error(
-            'Pin error:',
-            error
-          );
+          console.error('Pin error:', error);
 
           alert(
             'Failed to update pin: ' +
             error.message
           );
+
         }
 
       });
 
     });
+
+
+    // ========== MENU EDIT ==========
+
+    document.querySelectorAll('.menu-edit-btn').forEach(btn => {
+
+      btn.addEventListener('click', (e) => {
+
+        e.stopPropagation();
+
+        openEdit(
+          btn.dataset.id,
+          data
+        );
+
+      });
+
+    });
+
+
+    // ========== MENU DELETE ==========
+
+    document.querySelectorAll('.menu-delete-btn').forEach(btn => {
+
+      btn.addEventListener('click', (e) => {
+
+        e.stopPropagation();
+
+        deleteNote(
+          btn.dataset.id
+        );
+
+      });
+
+    });
+
 
   } catch (error) {
 
@@ -404,6 +454,16 @@ async function loadNotes() {
   }
 }
 
+document.addEventListener('click', () => {
+
+  document.querySelectorAll('.note-menu').forEach(menu => {
+
+    menu.classList.add('hidden');
+
+  });
+
+});
+
 
 // ========== ESCAPE HTML ==========
 
@@ -418,6 +478,38 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+// ========== AUTO-GROW TEXTAREA ==========
+
+function autoGrowTextarea() {
+
+  noteContent.style.height = 'auto';
+
+  const maxHeight =
+    window.innerHeight * 0.5;
+
+  const newHeight =
+    Math.min(
+      noteContent.scrollHeight,
+      maxHeight
+    );
+
+  noteContent.style.height =
+    newHeight + 'px';
+
+  // If note becomes very long,
+  // allow scrolling inside textarea
+  noteContent.style.overflowY =
+    noteContent.scrollHeight > maxHeight
+      ? 'auto'
+      : 'hidden';
+}
+
+
+// Grow while typing
+noteContent.addEventListener(
+  'input',
+  autoGrowTextarea
+);
 
 // ========== ADD NOTE ==========
 
@@ -435,10 +527,15 @@ if (addNoteBtn) {
 
     noteContent.value = '';
 
-    authorSelect.value =
-      'You';
+    authorSelect.value = 'You';
 
     modal.classList.remove('hidden');
+
+    //Reset textarea height
+    noteContent.style.height = 'auto';
+    noteContent.style.overflowY = 'hidden';
+
+    autoGrowTextarea();
 
     noteContent.focus();
 
@@ -470,6 +567,12 @@ function openEdit(id, allNotes) {
     note.author || 'You';
 
   modal.classList.remove('hidden');
+
+  // Resize according to existing note
+  noteContent.style.height = 'auto';
+  noteContent.style.overflowY = 'hidden';
+
+  autoGrowTextarea();
 
   noteContent.focus();
 }
