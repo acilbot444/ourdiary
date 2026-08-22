@@ -150,6 +150,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
+      gap: 12px;
     }
 
     .author-badge {
@@ -178,6 +179,7 @@
     .note-actions {
       display: flex;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .edit-btn, .delete-btn {
@@ -350,7 +352,49 @@ button:active {
   .delete-btn:hover {
     transform: scale(1.05);
   }
-}  
+} 
+
+.note-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+  text-align: right;
+}
+
+.pinned-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #7c3aed;
+}
+
+.pin-btn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 500;
+  background: #f3e8ff;
+  color: #7e22ce;
+}
+
+.pin-btn.pinned {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.pin-btn:active {
+  transform: scale(0.9);
+}
+
+@media (hover: hover) {
+  .pin-btn:hover {
+    transform: scale(1.05);
+  }
+}
+
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
