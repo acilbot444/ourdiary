@@ -56,6 +56,30 @@ function updateTime() {
 updateTime();
 setInterval(updateTime, 1000);
 
+function updateLockDate() {
+
+  const dateEl =
+    document.getElementById('lock-date');
+
+  if (!dateEl) return;
+
+  const now = new Date();
+
+  dateEl.textContent =
+    now.toLocaleDateString([], {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long'
+    });
+}
+
+updateLockDate();
+
+setInterval(
+  updateLockDate,
+  60000
+);
+
 
 // ========== SHOW / HIDE SCREENS ==========
 
@@ -317,8 +341,7 @@ async function loadNotes() {
 
         </div>
 
-        <p class="note-text">
-          ${escapeHtml(note.content)}
+        <p class="note-text">${escapeHtml(note.content)}
         </p>
 
       </div>
