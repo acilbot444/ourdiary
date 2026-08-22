@@ -40,83 +40,127 @@
     }
 
     /* LOCK SCREEN */
-    .lock-screen {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #453969, #810505);
-      padding: 20px;
-    }
+   .lock-screen {
+  min-height: 100dvh;
+  width: 100%;
 
-    .phone {
-      background: #111;
-      color: white;
-      width: 320px;
-      height: 580px;
-      border-radius: 40px;
-      padding: 50px 30px;
-      text-align: center;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 18px;
-      position: relative;
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding:
+    calc(24px + env(safe-area-inset-top))
+    20px
+    calc(24px + env(safe-area-inset-bottom));
+
+  background:
+    linear-gradient(
+      135deg,
+      #453969 0%,
+      #5c274d 45%,
+      #810505 100%
+    );
+}
+
+   .phone {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(12, 12, 14, 0.94);
+  color: white;
+  border-radius: 30px;
+  padding: 48px 28px 36px;
+  text-align: center;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.28);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
 
     .phone::before {
-      content: '';
-      position: absolute;
-      top: 12px;
-      width: 120px;
-      height: 28px;
-      background: #000;
-      border-radius: 20px;
-    }
+  display: none;
+}
 
     .time {
-      font-size: 52px;
-      font-weight: 200;
-      margin-top: 40px;
-      margin-bottom: 30px;
-    }
+  font-size: clamp(52px, 10vw, 72px);
+  font-weight: 200;
+  letter-spacing: -2px;
+  margin: 0;
+}
+
+.lock-date {
+  font-size: 14px;
+
+  color: rgba(255, 255, 255, 0.65);
+
+  margin-top: -8px;
+  margin-bottom: 22px;
+}
+
+.lock-icon {
+  font-size: 24px;
+
+  margin-bottom: -4px;
+}
 
     .phone h1 {
       font-size: 22px;
-      font-weight: 500;
+      font-weight: 600;
+      margin-bottom: 4px;
     }
 
     .phone input {
       width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 14px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 15px;
       font-size: 20px;
       text-align: center;
-      background: #222;
+      background: rgba(255, 255, 255, 0.08);
       color: white;
       outline: none;
-      letter-spacing: 4px;
+      letter-spacing: 5px;
+      transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
     }
+.phone input:focus {
+  background: rgba(255, 255, 255, 0.11);
+
+  border-color: rgba(196, 181, 253, 0.45);
+
+  box-shadow:
+    0 0 0 3px rgba(167, 139, 250, 0.10);
+}
+
+
 
     .phone button {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 14px;
-      background: white;
-      color: #111;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-    }
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 15px;
+  background: white;
+  color: #161616;
+  font-size: 16px;
+  font-weight: 650;
+  cursor: pointer;
+  box-shadow:
+    0 5px 16px rgba(0, 0, 0, 0.12);
+}
 
-    .error {
-      color: #ff6b6b;
-      font-size: 14px;
-      min-height: 20px;
-    }
+   .phone button:active {
+  transform: scale(0.97);
+}
+
+.error {
+  color: #ff8b8b;
+  font-size: 14px;
+  min-height: 20px;
+}
 
     /* NOTES SCREEN */
     .container {
@@ -182,12 +226,13 @@ header h1 {
   }
 }
 
-    .note-header {
+.note-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
-  margin-bottom: 14px;
+  margin: 0;
+  padding: 0;
 }
 
     .author-badge {
@@ -216,13 +261,14 @@ header h1 {
   );
 }
 
-    .note-text {
+ .note-text {
   font-size: 16px;
-  line-height: 1.65;
+  line-height: 1.6;
   color: #374151;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  margin: 0;
+  margin: 16px 0 0 0;
+  padding: 0;
 }
 
     .note-actions {
@@ -599,6 +645,43 @@ button:active {
 
 }
 
+@media (max-width: 480px) {
+
+  .lock-screen {
+    padding:
+      calc(40px + env(safe-area-inset-top))
+      24px
+      calc(30px + env(safe-area-inset-bottom));
+
+    align-items: flex-start;
+  }
+
+  .phone {
+    max-width: none;
+
+    min-height:
+      calc(
+        100dvh
+        - 70px
+        - env(safe-area-inset-top)
+        - env(safe-area-inset-bottom)
+      );
+
+    background: transparent;
+
+    border-radius: 0;
+
+    box-shadow: none;
+
+    padding: 60px 0 20px;
+  }
+
+  .time {
+    font-size: 58px;
+  }
+
+}
+
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -606,16 +689,38 @@ button:active {
 <body>
 
   <!-- LOCK SCREEN -->
-  <div id="lock-screen" class="lock-screen">
-    <div class="phone">
-      <div class="time" id="time"></div>
-      <h1>Enter Password</h1>
-      <input type="password" id="password" placeholder="••••" maxlength="20" autofocus>
-      <button id="unlock-btn">Unlock</button>
-      <p id="error" class="error"></p>
-    </div>
+<div id="lock-screen" class="lock-screen">
+
+  <div class="phone">
+
+    <!-- Current time -->
+    <div class="time" id="time"></div>
+
+    <!-- Current date -->
+    <div class="lock-date" id="lock-date"></div>
+
+    <!-- Lock icon -->
+    <div class="lock-icon"></div>
+
+    <h1>Enter Password</h1>
+
+    <input
+      type="password"
+      id="password"
+      placeholder="••••"
+      maxlength="20"
+      autofocus
+    >
+
+    <button id="unlock-btn">
+      Unlock
+    </button>
+
+    <p id="error" class="error"></p>
 
   </div>
+
+</div>
 
   <!-- NOTES SCREEN -->
   <div id="notes-screen" class="hidden">
