@@ -1,6 +1,7 @@
 // ========== CONFIG ==========
 
 const SUPABASE_URL = 'https://nowoihksodgeuyzjdnlu.supabase.co';
+
 const SUPABASE_ANON_KEY =
   'sb_publishable_0l1GruK7Tccric55r4YlKg_5wBlnXFF';
 
@@ -13,24 +14,29 @@ const FUNCTIONS_URL =
 
 console.log('app.js loaded successfully');
 
+
 // ========== ELEMENTS ==========
 
 const lockScreen = document.getElementById('lock-screen');
 const notesScreen = document.getElementById('notes-screen');
+
 const passwordInput = document.getElementById('password');
 const errorMsg = document.getElementById('error');
+
 const notesList = document.getElementById('notes-list');
+
 const modal = document.getElementById('modal');
 const noteContent = document.getElementById('note-content');
 const authorSelect = document.getElementById('author');
 const modalTitle = document.getElementById('modal-title');
+
 const unlockBtn = document.getElementById('unlock-btn');
 
 let editingId = null;
 
-// Password is kept only in memory.
-// It disappears when the page is refreshed or closed.
+// Password stays only in memory
 let currentPassword = '';
+
 
 // ========== TIME ==========
 
@@ -50,6 +56,7 @@ function updateTime() {
 updateTime();
 setInterval(updateTime, 1000);
 
+
 // ========== SHOW / HIDE SCREENS ==========
 
 function showLockScreen() {
@@ -59,7 +66,6 @@ function showLockScreen() {
   passwordInput.value = '';
   errorMsg.textContent = '';
 
-  // Clear password from memory
   currentPassword = '';
 
   passwordInput.focus();
@@ -75,7 +81,9 @@ function showNotesScreen() {
 // Always start locked
 showLockScreen();
 
+
 // ========== UNLOCK ==========
+
 async function tryUnlock() {
   const typedPassword = passwordInput.value.trim();
 
@@ -89,7 +97,6 @@ async function tryUnlock() {
   errorMsg.textContent = '';
 
   try {
-
     const response = await fetch(CHECK_PASSWORD_URL, {
       method: 'POST',
 
@@ -112,14 +119,11 @@ async function tryUnlock() {
     }
 
     if (result.success === true) {
-
-      // Keep password in memory for notes API calls
       currentPassword = typedPassword;
 
       showNotesScreen();
 
     } else {
-
       errorMsg.textContent = 'Wrong password';
 
       passwordInput.value = '';
@@ -127,7 +131,6 @@ async function tryUnlock() {
     }
 
   } catch (err) {
-
     console.error('Unlock error:', err);
 
     errorMsg.textContent =
@@ -138,50 +141,46 @@ async function tryUnlock() {
   unlockBtn.textContent = 'Unlock';
 }
 
-// Unlock button
 unlockBtn.addEventListener('click', tryUnlock);
 
-// Press Enter to unlock
 passwordInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') {
     tryUnlock();
   }
 });
 
-// ========== LOGOUT ==========
+
+// ========== LOGOUT / LOCK ==========
+
 const logoutBtn = document.getElementById('logout');
 
 if (logoutBtn) {
-
   logoutBtn.addEventListener('click', () => {
 
-    // Close modal if open
     if (modal) {
       modal.classList.add('hidden');
     }
 
     editingId = null;
 
-    // Clear password
     currentPassword = '';
 
-    // Return to lock screen
     showLockScreen();
   });
 }
+
 
 // ========== NOTES API HELPER ==========
 
 async function callNotesApi(action, payload = {}) {
 
-  // Don't allow notes requests without password
   if (!currentPassword) {
     showLockScreen();
+
     throw new Error('You are not unlocked.');
   }
 
   const response = await fetch(FUNCTIONS_URL, {
-
     method: 'POST',
 
     headers: {
@@ -190,13 +189,9 @@ async function callNotesApi(action, payload = {}) {
     },
 
     body: JSON.stringify({
-
       password: currentPassword,
-
       action: action,
-
       ...payload
-
     })
   });
 
@@ -204,13 +199,12 @@ async function callNotesApi(action, payload = {}) {
 
   try {
     result = await response.json();
+
   } catch (error) {
     throw new Error('Invalid server response.');
   }
 
-  // Unauthorized
   if (response.status === 401) {
-
     alert('Session expired or incorrect password.');
 
     showLockScreen();
@@ -218,18 +212,14 @@ async function callNotesApi(action, payload = {}) {
     throw new Error('Unauthorized');
   }
 
-  // Other server error
   if (!response.ok) {
-
     throw new Error(
       result?.message ||
       `Server error (${response.status})`
     );
   }
 
-  // API returned success:false
   if (!result.success) {
-
     throw new Error(
       result.message ||
       'API request failed.'
@@ -238,6 +228,7 @@ async function callNotesApi(action, payload = {}) {
 
   return result.data;
 }
+
 
 // ========== LOAD NOTES ==========
 
@@ -250,17 +241,19 @@ async function loadNotes() {
 
     const data = await callNotesApi('load');
 
-    // No notes
     if (!data || data.length === 0) {
       notesList.innerHTML =
         '<p class="empty">No notes yet. Add the first one!</p>';
+
       return;
     }
 
-    // Display notes
     notesList.innerHTML = data.map(note => `
+
       <div class="note" data-id="${note.id}">
+
         <div class="note-header">
+
           <span class="author-badge ${
             note.author === 'Him' ? 'him' : 'you'
           }">
@@ -269,19 +262,35 @@ async function loadNotes() {
 
           </span>
 
-          <small>
-            ${new Date(note.created_at).toLocaleString()}
-          </small>
+
+          <div class="note-meta">
+
+            ${
+              note.pinned
+                ? '<span class="pinned-label">📌 Pinned</span>'
+                : ''
+            }
+
+            <small>
+              ${new Date(note.created_at).toLocaleString()}
+            </small>
+
+          </div>
 
         </div>
 
-
         <p class="note-text">
-          ${escapeHtml(note.content)}
-        </p>
-
+  ${escapeHtml(note.content)}
+</p>
 
         <div class="note-actions">
+
+          <button
+            class="pin-btn ${note.pinned ? 'pinned' : ''}"
+            data-id="${note.id}"
+            data-pinned="${note.pinned}">
+            ${note.pinned ? '📌 Unpin' : '📌 Pin'}
+          </button>
 
           <button
             class="edit-btn"
@@ -302,33 +311,80 @@ async function loadNotes() {
     `).join('');
 
 
-    // Edit buttons
+    // ========== EDIT BUTTONS ==========
+
     document.querySelectorAll('.edit-btn').forEach(btn => {
 
       btn.addEventListener('click', () => {
 
-        openEdit(btn.dataset.id, data);
+        openEdit(
+          btn.dataset.id,
+          data
+        );
 
       });
 
     });
 
 
-    // Delete buttons
+    // ========== DELETE BUTTONS ==========
+
     document.querySelectorAll('.delete-btn').forEach(btn => {
 
       btn.addEventListener('click', () => {
 
-        deleteNote(btn.dataset.id);
+        deleteNote(
+          btn.dataset.id
+        );
 
       });
 
     });
 
 
+    // ========== PIN BUTTONS ==========
+
+    document.querySelectorAll('.pin-btn').forEach(btn => {
+
+      btn.addEventListener('click', async () => {
+
+        const id = btn.dataset.id;
+
+        const currentlyPinned =
+          btn.dataset.pinned === 'true';
+
+        try {
+
+          await callNotesApi('pin', {
+            id: id,
+            pinned: !currentlyPinned
+          });
+
+          await loadNotes();
+
+        } catch (error) {
+
+          console.error(
+            'Pin error:',
+            error
+          );
+
+          alert(
+            'Failed to update pin: ' +
+            error.message
+          );
+        }
+
+      });
+
+    });
+
   } catch (error) {
 
-    console.error('Load error:', error);
+    console.error(
+      'Load error:',
+      error
+    );
 
     notesList.innerHTML = `
 
@@ -353,9 +409,11 @@ async function loadNotes() {
 
 function escapeHtml(text) {
 
-  const div = document.createElement('div');
+  const div =
+    document.createElement('div');
 
-  div.textContent = text ?? '';
+  div.textContent =
+    text ?? '';
 
   return div.innerHTML;
 }
@@ -363,7 +421,8 @@ function escapeHtml(text) {
 
 // ========== ADD NOTE ==========
 
-const addNoteBtn = document.getElementById('add-note-btn');
+const addNoteBtn =
+  document.getElementById('add-note-btn');
 
 if (addNoteBtn) {
 
@@ -371,11 +430,13 @@ if (addNoteBtn) {
 
     editingId = null;
 
-    modalTitle.textContent = 'Add a note';
+    modalTitle.textContent =
+      'Add a note';
 
     noteContent.value = '';
 
-    authorSelect.value = 'You';
+    authorSelect.value =
+      'You';
 
     modal.classList.remove('hidden');
 
@@ -393,17 +454,17 @@ function openEdit(id, allNotes) {
     n => String(n.id) === String(id)
   );
 
-
   if (!note) {
     return;
   }
 
-
   editingId = id;
 
-  modalTitle.textContent = 'Edit note';
+  modalTitle.textContent =
+    'Edit note';
 
-  noteContent.value = note.content || '';
+  noteContent.value =
+    note.content || '';
 
   authorSelect.value =
     note.author || 'You';
@@ -416,7 +477,9 @@ function openEdit(id, allNotes) {
 
 // ========== CANCEL ==========
 
-const cancelBtn = document.getElementById('cancel-btn');
+const cancelBtn =
+  document.getElementById('cancel-btn');
+
 if (cancelBtn) {
 
   cancelBtn.addEventListener('click', () => {
@@ -433,113 +496,128 @@ if (cancelBtn) {
 
 // ========== SAVE NOTE ==========
 
-const saveBtn = document.getElementById('save-btn');
+const saveBtn =
+  document.getElementById('save-btn');
 
 if (saveBtn) {
 
-  saveBtn.addEventListener('click', async () => {
+  saveBtn.addEventListener(
+    'click',
+    async () => {
 
-    const content = noteContent.value.trim();
+      const content =
+        noteContent.value.trim();
 
-    const author = authorSelect.value;
-
-
-    if (!content) {
-
-      alert('Please write something 💕');
-
-      return;
-    }
+      const author =
+        authorSelect.value;
 
 
-    saveBtn.disabled = true;
+      if (!content) {
 
-    saveBtn.textContent = 'Saving...';
+        alert(
+          'Please write something 💕'
+        );
+
+        return;
+      }
 
 
-    try {
+      saveBtn.disabled = true;
 
-      // EDIT
-      if (editingId) {
+      saveBtn.textContent =
+        'Saving...';
 
-        await callNotesApi('edit', {
 
-          id: editingId,
+      try {
 
-          content: content,
+        // EDIT
+        if (editingId) {
 
-          author: author
+          await callNotesApi(
+            'edit',
+            {
+              id: editingId,
+              content: content,
+              author: author
+            }
+          );
 
-        });
+        }
+
+        // ADD
+        else {
+
+          await callNotesApi(
+            'add',
+            {
+              content: content,
+              author: author
+            }
+          );
+
+        }
+
+
+        modal.classList.add('hidden');
+
+        noteContent.value = '';
+
+        editingId = null;
+
+        await loadNotes();
+
+
+      } catch (error) {
+
+        console.error(
+          'Save error:',
+          error
+        );
+
+        alert(
+          'Failed to save: ' +
+          error.message
+        );
+
+      } finally {
+
+        saveBtn.disabled = false;
+
+        saveBtn.textContent =
+          'Save';
 
       }
 
-      // ADD
-      else {
-
-        await callNotesApi('add', {
-
-          content: content,
-
-          author: author
-
-        });
-
-      }
-
-      // Close modal
-      modal.classList.add('hidden');
-
-      noteContent.value = '';
-
-      editingId = null;
-
-
-      // Refresh notes
-      await loadNotes();
-
-
-    } catch (error) {
-
-      console.error('Save error:', error);
-
-      alert(
-        'Failed to save: ' +
-        error.message
-      );
-
-    } finally {
-
-      saveBtn.disabled = false;
-
-      saveBtn.textContent = 'Save';
     }
-
-  });
+  );
 }
 
 
 // ========== DELETE NOTE ==========
+
 async function deleteNote(id) {
 
   if (!confirm('Delete this note?')) {
     return;
   }
 
-
   try {
 
-    await callNotesApi('delete', {
-      id: id
-    });
-
+    await callNotesApi(
+      'delete',
+      {
+        id: id
+      }
+    );
 
     await loadNotes();
 
-
   } catch (error) {
 
-    console.error('Delete error:', error);
+    console.error(
+      'Delete error:',
+      error
+    );
 
     alert(
       'Failed to delete: ' +
