@@ -14,12 +14,26 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #efe8f7;
-      min-height: 100vh;
-      color: #333;
-      overscroll-behavior: none;
-    }
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+
+  background:
+    linear-gradient(
+      180deg,
+      #f3edf9 0%,
+      #eee7f6 100%
+    );
+
+  min-height: 100vh;
+
+  color: #333;
+
+  overscroll-behavior: none;
+}
 
     .hidden {
       display: none !important;
@@ -115,18 +129,24 @@
       padding-bottom: calc(110px + env(safe-area-inset-bottom));
     }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 28px;
-    }
+   header {
+  display: flex;
 
-    header h1 {
-      font-size: 26px;
-      font-weight: 700;
-      color: #6c42b5;
-    }
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 24px;
+}
+
+header h1 {
+  font-size: 28px;
+
+  font-weight: 750;
+
+  letter-spacing: -0.5px;
+
+  color: #633ca6;
+}
 
     #logout {
       background: white;
@@ -138,43 +158,72 @@
     }
 
     .note {
-      background: white;
-      padding: 18px;
-      border-radius: 18px;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-    }
+  background: rgba(255, 255, 255, 0.92);
+  padding: 20px;
+  border-radius: 22px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 2px 4px rgba(76, 29, 149, 0.03),
+    0 8px 24px rgba(76, 29, 149, 0.07);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+@media (hover: hover) {
+  .note:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+      0 4px 8px rgba(76, 29, 149, 0.04),
+      0 12px 30px rgba(76, 29, 149, 0.10);
+  }
+}
 
     .note-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      gap: 12px;
-    }
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
 
     .author-badge {
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 20px;
-      color: white;
-    }
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 999px;
+  color: white;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
 
-    .author-badge.you {
-      background: #e696be;
-    }
+.author-badge.you {
+  background: linear-gradient(
+    135deg,
+    #e696be,
+    #db7bae
+  );
+}
 
-    .author-badge.him {
-      background: #6366f1;
-    }
+.author-badge.him {
+  background: linear-gradient(
+    135deg,
+    #818cf8,
+    #6366f1
+  );
+}
 
     .note-text {
-      font-size: 16px;
-      line-height: 1.5;
-      white-space: pre-wrap;
-      margin-bottom: 12px;
-    }
+  font-size: 16px;
+  line-height: 1.65;
+  color: #374151;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 0;
+}
 
     .note-actions {
       display: flex;
@@ -356,17 +405,30 @@ button:active {
 
 .note-meta {
   display: flex;
+
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
+
+  gap: 7px;
+
   flex-wrap: wrap;
+
   text-align: right;
 }
 
+.note-meta small {
+  font-size: 11px;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
 .pinned-label {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: #7c3aed;
+  background: #f3e8ff;
+  padding: 4px 8px;
+  border-radius: 999px;
 }
 
 .pin-btn {
@@ -393,6 +455,148 @@ button:active {
   .pin-btn:hover {
     transform: scale(1.05);
   }
+}
+
+/* ========== NOTE MENU ========== */
+
+.note-top-right {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.note-menu-wrapper {
+  position: relative;
+}
+
+.menu-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #8b8b96;
+  font-size: 23px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.menu-btn:active {
+  background: #f3f0f7;
+  transform: scale(0.88);
+}
+
+@media (hover: hover) {
+  .menu-btn:hover {
+    background: #f3f0f7;
+  }
+}
+
+.note-menu {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 155px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.14);
+  z-index: 50;
+  transform-origin: top right;
+  animation: menuOpen 0.16s ease-out;
+}
+
+@keyframes menuOpen {
+
+  from {
+    opacity: 0;
+    transform:
+      scale(0.94)
+      translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      scale(1)
+      translateY(0);
+  }
+}
+.note-menu button {
+  width: 100%;
+
+  border: none;
+
+  background: transparent;
+
+  padding: 11px 12px;
+
+  border-radius: 10px;
+
+  text-align: left;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  color: #374151;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.note-menu button:active {
+  transform: scale(0.97);
+
+  background: #f5f3ff;
+}
+
+@media (hover: hover) {
+
+  .note-menu button:hover {
+    background: #f5f3ff;
+  }
+
+}
+
+.note-menu .menu-delete-btn {
+  color: #dc2626;
+}
+
+.note-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+  text-align: right;
+}
+
+@media (max-width: 480px) {
+
+  .note-header {
+    align-items: flex-start;
+  }
+
+  .note-meta small {
+    font-size: 11px;
+  }
+
+  .pinned-label {
+    font-size: 11px;
+  }
+
 }
 
   </style>
