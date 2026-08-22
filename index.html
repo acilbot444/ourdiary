@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Our Notes 💌</title>
-  
+
   <style>
     * {
       box-sizing: border-box;
@@ -106,9 +106,13 @@
 
     /* NOTES SCREEN */
     .container {
-      max-width: 560px;
+      max-width: 700px;
       margin: 0 auto;
-      padding: 24px 16px 100px;
+      
+      padding-top: calc(24px + env(safe-area-inset-top));
+      padding-left: 16px;
+      padding-right: 16px;
+      padding-bottom: calc(110px + env(safe-area-inset-bottom));
     }
 
     header {
@@ -229,6 +233,8 @@
       align-items: center;
       z-index: 100;
       padding: 20px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .modal-content {
@@ -237,6 +243,8 @@
       border-radius: 24px;
       width: 100%;
       max-width: 400px;
+      max-height: calc(100dvh - 40px);
+      overflow-y: auto;
     }
 
     .modal-content h3 {
@@ -259,7 +267,7 @@
       border: 1px solid #e5e7eb;
       border-radius: 12px;
       margin-bottom: 16px;
-      font-size: 15px;
+      font-size: 16px;
       font-family: inherit;
     }
 
@@ -304,7 +312,11 @@ button:active {
 
 /* Floating + button special effect */
 .add-btn {
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+    right: 20px;
+    width: 60px;
+    height: 60px;
+  /* transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;*/
 }
 
 .add-btn:active {
@@ -355,8 +367,6 @@ button:active {
       <p id="error" class="error"></p>
     </div>
 
-  <!-- Hearts animation container -->
-   <div id="hearts-container"></div>
   </div>
 
   <!-- NOTES SCREEN -->
@@ -364,6 +374,7 @@ button:active {
     <div class="container">
       <header>
         <h1>Our Notes ✉︎</h1>
+        <button id="logout">Lock</button>
       </header>
 
       <div id="notes-list"></div>
