@@ -235,7 +235,7 @@ header h1 {
   padding: 0;
 }
 
-    .author-badge {
+  .author-badge {
   font-size: 12px;
   font-weight: 600;
   padding: 5px 12px;
@@ -269,6 +269,17 @@ header h1 {
   overflow-wrap: anywhere;
   margin: 16px 0 0 0;
   padding: 0;
+}
+
+.note-text a {
+  color: #6d28d9;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+.note-text a:hover {
+  color: #4c1d95;
 }
 
     .note-actions {
@@ -368,9 +379,13 @@ header h1 {
       font-family: inherit;
     }
 
-    .modal-content textarea {
-      resize: vertical;
-    }
+  .modal-content textarea {
+  resize: none;
+  overflow-y: hidden;
+  min-height: 120px;
+  max-height: 50vh;
+  line-height: 1.5;
+}
 
     .modal-actions {
       display: flex;
@@ -405,6 +420,47 @@ button {
 
 button:active {
   transform: scale(0.92);
+}
+
+/* MOOD */
+
+.note-left-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mood-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 4px 9px;
+
+  border-radius: 999px;
+
+  background: #f5f3ff;
+
+  color: #6d28d9;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+
+  .note-left-meta {
+    gap: 6px;
+  }
+
+  .mood-badge {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
 }
 
 /* Floating + button special effect */
@@ -682,6 +738,128 @@ button:active {
 
 }
 
+/* ========== IMAGE ATTACHMENTS ========== */
+
+.image-upload-section {
+  margin-bottom: 18px;
+}
+
+.image-upload-section > label:first-child {
+  display: block;
+  margin-bottom: 8px;
+}
+
+
+/* Hide ugly browser file input */
+#image-input {
+  display: none;
+}
+
+
+.image-picker-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px 14px;
+
+  background: #f5f3ff;
+  color: #6d28d9;
+
+  border: 1px solid #ddd6fe;
+
+  border-radius: 12px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+
+
+.image-picker-btn:active {
+  transform: scale(0.96);
+}
+
+
+.image-preview-container {
+  margin-top: 14px;
+}
+
+
+#image-preview {
+  display: block;
+
+  width: 100%;
+  max-height: 300px;
+
+  object-fit: cover;
+
+  border-radius: 16px;
+
+  margin-bottom: 10px;
+
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+
+#remove-image-btn {
+  border: none;
+
+  background: #fee2e2;
+  color: #b91c1c;
+
+  padding: 8px 12px;
+
+  border-radius: 9px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+/* Image displayed inside saved note */
+
+.note-image {
+  display: block;
+
+  width: 100%;
+
+  max-height: 450px;
+
+  object-fit: cover;
+
+  border-radius: 16px;
+
+  margin-top: 14px;
+
+  box-shadow:
+    0 4px 18px rgba(0, 0, 0, 0.07);
+}
+
+
+/* iPhone */
+
+@media (max-width: 480px) {
+
+  .note-image {
+    max-height: 380px;
+    border-radius: 14px;
+  }
+
+  #image-preview {
+    max-height: 260px;
+  }
+
+}
+
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -744,7 +922,56 @@ button:active {
             <option value="Him">Him</option>
           </select>
 
-          <textarea id="note-content" placeholder="Leave a note..." rows="5"></textarea>
+          <label for="mood">How are you feeling?</label>
+
+<select id="mood">
+  <option value="">No mood</option>
+  <option value="Happy">😊 Happy</option>
+  <option value="Loved">🥰 Loved</option>
+  <option value="Stressed">😣 Stressed</option>
+  <option value="Mad">😠 Mad</option>
+  <option value="Sad">😢 Sad</option>
+  <option value="Annoyed">😒 Annoyed</option>
+  <option value="Proud">🥹 Proud</option>
+  <option value="Sleepy">😴 Sleepy</option>
+</select>
+
+<textarea id="note-content" placeholder="Leave a note..." rows="5"></textarea>
+
+<div class="image-upload-section">
+
+  <label>Attach a photo</label>
+
+  <input
+    type="file"
+    id="image-input"
+    accept="image/*"
+  >
+
+  <label
+    for="image-input"
+    class="image-picker-btn">
+    📷 Choose Photo
+  </label>
+
+  <div
+    id="image-preview-container"
+    class="image-preview-container hidden">
+
+    <img
+      id="image-preview"
+      alt="Selected photo preview"
+    >
+
+    <button
+      type="button"
+      id="remove-image-btn">
+      Remove photo
+    </button>
+
+  </div>
+
+</div>
 
           <div class="modal-actions">
             <button id="cancel-btn">Cancel</button>
