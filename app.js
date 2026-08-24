@@ -5,6 +5,12 @@ const SUPABASE_URL = 'https://nowoihksodgeuyzjdnlu.supabase.co';
 const SUPABASE_ANON_KEY =
   'sb_publishable_0l1GruK7Tccric55r4YlKg_5wBlnXFF';
 
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
 // Edge Function URLs
 const CHECK_PASSWORD_URL =
   `${SUPABASE_URL}/functions/v1/checkpw`;
@@ -19,21 +25,25 @@ console.log('app.js loaded successfully');
 
 const lockScreen = document.getElementById('lock-screen');
 const notesScreen = document.getElementById('notes-screen');
-
 const passwordInput = document.getElementById('password');
 const errorMsg = document.getElementById('error');
-
 const notesList = document.getElementById('notes-list');
-
 const modal = document.getElementById('modal');
 const noteContent = document.getElementById('note-content');
 const authorSelect = document.getElementById('author');
+const moodSelect = document.getElementById('mood');
 const modalTitle = document.getElementById('modal-title');
-
 const unlockBtn = document.getElementById('unlock-btn');
+const imageInput = document.getElementById('image-input');
+const imagePreview = document.getElementById('image-preview');
+const imagePreviewContainer = document.getElementById('image-preview-container');
+const removeImageBtn = document.getElementById('remove-image-btn');
 
 let editingId = null;
-
+let selectedImageFile = null;
+let currentImagePath = null;
+let removeCurrentImage = false;
+let previewObjectUrl = null;
 // Password stays only in memory
 let currentPassword = '';
 
@@ -279,11 +289,24 @@ async function loadNotes() {
 
         <div class="note-header">
 
+          <div class="note-left-meta">
+
           <span class="author-badge ${
-            note.author === 'Him' ? 'him' : 'you'
+           note.author === 'Him' ? 'him' : 'you'
           }">
             ${escapeHtml(note.author || 'Someone')}
           </span>
+
+  ${
+    note.mood
+      ? `<span class="mood-badge">
+          ${getMoodEmoji(note.mood)}
+          ${escapeHtml(note.mood)}
+        </span>`
+      : ''
+  }
+
+</div>
 
           <div class="note-top-right">
 
@@ -341,8 +364,19 @@ async function loadNotes() {
 
         </div>
 
-        <p class="note-text">${escapeHtml(note.content)}
-        </p>
+        <p class="note-text">${linkifyText(note.content)}</p>
+        ${
+         note.image_url
+        ? `
+        <img
+        class="note-image"
+        src="${note.image_url}"
+        alt="Note attachment"
+        loading="lazy"
+      >
+    `
+    : ''
+}
 
       </div>
 
@@ -501,6 +535,33 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+function linkifyText(text) {
+  const escaped = escapeHtml(text);
+
+  const urlRegex = /(https?:\/\/[^\s<]+)/g;
+
+  return escaped.replace(
+    urlRegex,
+    '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
+  );
+}
+
+function getMoodEmoji(mood) {
+
+  const moods = {
+    Happy: '😊',
+    Loved: '🥰',
+    Stressed: '😣',
+    Mad: '😠',
+    Sad: '😢',
+    Annoyed: '😒',
+    Proud: '🥹',
+    Sleepy: '😴'
+  };
+
+  return moods[mood] || '';
+}
+
 // ========== AUTO-GROW TEXTAREA ==========
 
 function autoGrowTextarea() {
@@ -527,12 +588,116 @@ function autoGrowTextarea() {
       : 'hidden';
 }
 
-
 // Grow while typing
 noteContent.addEventListener(
   'input',
   autoGrowTextarea
 );
+
+// ========== IMAGE PREVIEW ==========
+
+function clearPreviewObjectUrl() {
+  if (previewObjectUrl) {
+    URL.revokeObjectURL(previewObjectUrl);
+    previewObjectUrl = null;
+  }
+}
+
+function resetImageState() {
+  clearPreviewObjectUrl();
+
+  selectedImageFile = null;
+  currentImagePath = null;
+  removeCurrentImage = false;
+
+  if (imageInput) {
+    imageInput.value = '';
+  }
+
+  if (imagePreview) {
+    imagePreview.removeAttribute('src');
+  }
+
+  if (imagePreviewContainer) {
+    imagePreviewContainer.classList.add('hidden');
+  }
+}
+
+function showImagePreview(src) {
+  if (!imagePreview || !imagePreviewContainer) {
+    return;
+  }
+
+  imagePreview.src = src;
+  imagePreviewContainer.classList.remove('hidden');
+}
+
+
+// Choose image
+if (imageInput) {
+  imageInput.addEventListener('change', () => {
+
+    const file = imageInput.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please choose an image.');
+      imageInput.value = '';
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+      alert(
+        'The image is too large. Please choose an image smaller than 5 MB.'
+      );
+
+      imageInput.value = '';
+      return;
+    }
+
+    clearPreviewObjectUrl();
+
+    selectedImageFile = file;
+    removeCurrentImage = false;
+
+    previewObjectUrl =
+      URL.createObjectURL(file);
+
+    showImagePreview(previewObjectUrl);
+  });
+}
+
+
+// Remove image
+if (removeImageBtn) {
+  removeImageBtn.addEventListener('click', () => {
+
+    clearPreviewObjectUrl();
+
+    selectedImageFile = null;
+
+    if (imageInput) {
+      imageInput.value = '';
+    }
+
+    if (currentImagePath) {
+      removeCurrentImage = true;
+    }
+
+    if (imagePreview) {
+      imagePreview.removeAttribute('src');
+    }
+
+    if (imagePreviewContainer) {
+      imagePreviewContainer.classList.add('hidden');
+    }
+  });
+}
 
 // ========== ADD NOTE ==========
 
@@ -549,9 +714,9 @@ if (addNoteBtn) {
       'Add a note';
 
     noteContent.value = '';
-
     authorSelect.value = 'You';
-
+    moodSelect.value = '';
+    resetImageState();
     modal.classList.remove('hidden');
 
     //Reset textarea height
@@ -588,7 +753,17 @@ function openEdit(id, allNotes) {
 
   authorSelect.value =
     note.author || 'You';
-
+  moodSelect.value =
+  note.mood || '';
+  resetImageState();
+currentImagePath =
+  note.image_path || null;
+removeCurrentImage = false;
+if (note.image_url) {
+  showImagePreview(
+    note.image_url
+  );
+}
   modal.classList.remove('hidden');
 
   // Resize according to existing note
@@ -599,7 +774,6 @@ function openEdit(id, allNotes) {
 
   noteContent.focus();
 }
-
 
 // ========== CANCEL ==========
 
@@ -633,9 +807,10 @@ if (saveBtn) {
 
       const content =
         noteContent.value.trim();
-
       const author =
         authorSelect.value;
+      const mood =
+        moodSelect.value;
 
 
       if (!content) {
@@ -655,17 +830,35 @@ if (saveBtn) {
 
 
       try {
+let imagePath =
+    currentImagePath;
 
+  // Upload new image if selected
+  if (selectedImageFile) {
+
+    imagePath =
+      await uploadSelectedImage();
+
+  }
+
+  // User explicitly removed image
+  else if (removeCurrentImage) {
+
+    imagePath = null;
+
+  }
         // EDIT
         if (editingId) {
 
           await callNotesApi(
-            'edit',
+          'edit',
             {
-              id: editingId,
-              content: content,
-              author: author
-            }
+            id: editingId,
+            content: content,
+            author: author,
+            mood: mood,
+            image_path: imagePath
+          }
           );
 
         }
@@ -677,12 +870,13 @@ if (saveBtn) {
             'add',
             {
               content: content,
-              author: author
+              author: author,
+              mood: mood,
+              image_path: imagePath
             }
           );
 
         }
-
 
         modal.classList.add('hidden');
 
@@ -750,4 +944,64 @@ async function deleteNote(id) {
       error.message
     );
   }
+}
+
+// ========== UPLOAD IMAGE ==========
+
+async function uploadSelectedImage() {
+
+  if (!selectedImageFile) {
+    return null;
+  }
+
+
+  // Ask notes-api for temporary
+  // upload permission
+  const uploadInfo =
+    await callNotesApi(
+      'create-image-upload',
+      {
+        file_name:
+          selectedImageFile.name,
+
+        file_type:
+          selectedImageFile.type,
+
+        file_size:
+          selectedImageFile.size
+      }
+    );
+
+
+  if (
+    !uploadInfo?.path ||
+    !uploadInfo?.token
+  ) {
+    throw new Error(
+      'Could not prepare image upload.'
+    );
+  }
+
+
+  const { error } =
+    await supabaseClient
+      .storage
+      .from('note-images')
+      .uploadToSignedUrl(
+        uploadInfo.path,
+        uploadInfo.token,
+        selectedImageFile,
+        {
+          contentType:
+            selectedImageFile.type
+        }
+      );
+
+
+  if (error) {
+    throw error;
+  }
+
+
+  return uploadInfo.path;
 }
