@@ -2,10 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
   <title>Our Notes 💌</title>
 
   <style>
+    /* ========== RESET ========== */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -14,96 +19,79 @@
     }
 
     body {
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    sans-serif;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        Roboto,
+        sans-serif;
 
-  background:
-    linear-gradient(
-      180deg,
-      #f3edf9 0%,
-      #eee7f6 100%
-    );
+      background:
+        linear-gradient(
+          180deg,
+          #f3edf9 0%,
+          #eee7f6 100%
+        );
 
-  min-height: 100vh;
+      min-height: 100vh;
+      color: #333;
 
-  color: #333;
-
-  overscroll-behavior: none;
-}
+      overscroll-behavior: none;
+    }
 
     .hidden {
       display: none !important;
     }
 
-    /* LOCK SCREEN */
-   .lock-screen {
-  min-height: 100dvh;
-  width: 100%;
+    /* ========== LOCK SCREEN ========== */
+    .lock-screen {
+      min-height: 100dvh;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding:
+        calc(24px + env(safe-area-inset-top))
+        20px
+        calc(24px + env(safe-area-inset-bottom));
+      background:
+        linear-gradient(
+          135deg,
+          #453969 0%,
+          #5c274d 45%,
+          #810505 100%
+        );
+    }
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  padding:
-    calc(24px + env(safe-area-inset-top))
-    20px
-    calc(24px + env(safe-area-inset-bottom));
-
-  background:
-    linear-gradient(
-      135deg,
-      #453969 0%,
-      #5c274d 45%,
-      #810505 100%
-    );
-}
-
-   .phone {
-  width: 100%;
-  max-width: 420px;
-  background: rgba(12, 12, 14, 0.94);
-  color: white;
-  border-radius: 30px;
-  padding: 48px 28px 36px;
-  text-align: center;
-  box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.28);
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 18px;
-}
-
-    .phone::before {
-  display: none;
-}
+    .phone {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(12, 12, 14, 0.94);
+      color: white;
+      border-radius: 30px;
+      padding: 48px 28px 36px;
+      text-align: center;
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.28);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
 
     .time {
-  font-size: clamp(52px, 10vw, 72px);
-  font-weight: 200;
-  letter-spacing: -2px;
-  margin: 0;
-}
+      font-size: clamp(52px, 10vw, 72px);
+      font-weight: 200;
+      letter-spacing: -2px;
+      margin: 0;
+    }
 
-.lock-date {
-  font-size: 14px;
-
-  color: rgba(255, 255, 255, 0.65);
-
-  margin-top: -8px;
-  margin-bottom: 22px;
-}
-
-.lock-icon {
-  font-size: 24px;
-
-  margin-bottom: -4px;
-}
+    .lock-date {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.65);
+      margin-top: -8px;
+      margin-bottom: 22px;
+    }
 
     .phone h1 {
       font-size: 22px;
@@ -114,83 +102,83 @@
     .phone input {
       width: 100%;
       padding: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.06);
       border-radius: 15px;
       font-size: 20px;
       text-align: center;
-      background: rgba(255, 255, 255, 0.08);
+      background:
+        rgba(255, 255, 255, 0.08);
       color: white;
       outline: none;
       letter-spacing: 5px;
       transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
     }
-.phone input:focus {
-  background: rgba(255, 255, 255, 0.11);
 
-  border-color: rgba(196, 181, 253, 0.45);
-
-  box-shadow:
-    0 0 0 3px rgba(167, 139, 250, 0.10);
-}
-
-
+    .phone input:focus {
+      background:
+        rgba(255, 255, 255, 0.11);
+      border-color:
+        rgba(196, 181, 253, 0.45);
+      box-shadow:
+        0 0 0 3px
+        rgba(167, 139, 250, 0.10);
+    }
 
     .phone button {
-  width: 100%;
-  padding: 15px;
-  border: none;
-  border-radius: 15px;
-  background: white;
-  color: #161616;
-  font-size: 16px;
-  font-weight: 650;
-  cursor: pointer;
-  box-shadow:
-    0 5px 16px rgba(0, 0, 0, 0.12);
-}
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 15px;
+      background: white;
+      color: #161616;
+      font-size: 16px;
+      font-weight: 650;
+      cursor: pointer;
+      box-shadow:
+        0 5px 16px
+        rgba(0, 0, 0, 0.12);
+    }
 
-   .phone button:active {
-  transform: scale(0.97);
-}
+    .phone button:active {
+      transform: scale(0.97);
+    }
 
-.error {
-  color: #ff8b8b;
-  font-size: 14px;
-  min-height: 20px;
-}
+    .error {
+      color: #ff8b8b;
+      font-size: 14px;
+      min-height: 20px;
+    }
 
-    /* NOTES SCREEN */
+    /* ========== NOTES SCREEN ========== */
     .container {
       max-width: 700px;
       margin: 0 auto;
-      
-      padding-top: calc(24px + env(safe-area-inset-top));
+      padding-top:
+        calc(24px + env(safe-area-inset-top));
       padding-left: 16px;
       padding-right: 16px;
-      padding-bottom: calc(110px + env(safe-area-inset-bottom));
+      padding-bottom:
+        calc(110px + env(safe-area-inset-bottom));
     }
 
-   header {
-  display: flex;
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
 
-  justify-content: space-between;
-  align-items: center;
-
-  margin-bottom: 24px;
-}
-
-header h1 {
-  font-size: 28px;
-
-  font-weight: 750;
-
-  letter-spacing: -0.5px;
-
-  color: #633ca6;
-}
+    header h1 {
+      font-size: 28px;
+      font-weight: 750;
+      letter-spacing: -0.5px;
+      color: #633ca6;
+    }
 
     #logout {
       background: white;
@@ -201,141 +189,272 @@ header h1 {
       font-size: 14px;
     }
 
+    /* ========== NOTE CARD ========== */
     .note {
-  background: rgba(255, 255, 255, 0.92);
-  padding: 20px;
-  border-radius: 22px;
-  margin-bottom: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow:
-    0 2px 4px rgba(76, 29, 149, 0.03),
-    0 8px 24px rgba(76, 29, 149, 0.07);
+      background:
+        rgba(255, 255, 255, 0.92);
+      padding: 20px;
+      border-radius: 22px;
+      margin-bottom: 16px;
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.7);
+      box-shadow:
+        0 2px 4px rgba(76, 29, 149, 0.03),
+        0 8px 24px rgba(76, 29, 149, 0.07);
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
 
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-@media (hover: hover) {
-  .note:hover {
-    transform: translateY(-2px);
-
-    box-shadow:
-      0 4px 8px rgba(76, 29, 149, 0.04),
-      0 12px 30px rgba(76, 29, 149, 0.10);
-  }
-}
-
-.note-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-}
-
-  .author-badge {
-  font-size: 12px;
-  font-weight: 600;
-  padding: 5px 12px;
-  border-radius: 999px;
-  color: white;
-  line-height: 1.2;
-  flex-shrink: 0;
-}
-
-.author-badge.you {
-  background: linear-gradient(
-    135deg,
-    #e696be,
-    #db7bae
-  );
-}
-
-.author-badge.him {
-  background: linear-gradient(
-    135deg,
-    #818cf8,
-    #6366f1
-  );
-}
-
- .note-text {
-  font-size: 16px;
-  line-height: 1.6;
-  color: #374151;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  margin: 16px 0 0 0;
-  padding: 0;
-}
-
-.note-text a {
-  color: #6d28d9;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  overflow-wrap: anywhere;
-}
-
-.note-text a:hover {
-  color: #4c1d95;
-}
-
-    .note-actions {
+    .note-header {
       display: flex;
-      gap: 10px;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .note-left-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
-    .edit-btn, .delete-btn {
-      padding: 6px 14px;
+    .author-badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 999px;
+      color: white;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+
+    .author-badge.you {
+      background:
+        linear-gradient(
+          135deg,
+          #e696be,
+          #db7bae
+        );
+    }
+
+    .author-badge.him {
+      background:
+        linear-gradient(
+          135deg,
+          #818cf8,
+          #6366f1
+        );
+    }
+
+    .mood-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #f5f3ff;
+      color: #6d28d9;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .note-text {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #374151;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      margin: 16px 0 0 0;
+      padding: 0;
+    }
+
+    .note-text a {
+      color: #6d28d9;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      overflow-wrap: anywhere;
+    }
+
+    .note-text a:hover {
+      color: #4c1d95;
+    }
+
+    .note-top-right {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin-left: auto;
+    }
+
+    .note-meta {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+      text-align: right;
+    }
+
+    .note-meta small {
+      font-size: 11px;
+      color: #9ca3af;
+      white-space: nowrap;
+    }
+
+    .pinned-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #7c3aed;
+      background: #f3e8ff;
+      padding: 4px 8px;
+      border-radius: 999px;
+    }
+
+    /* ========== NOTE MENU ========== */
+    .note-menu-wrapper {
+      position: relative;
+    }
+
+    .menu-btn {
+      width: 36px;
+      height: 36px;
       border: none;
-      border-radius: 8px;
-      font-size: 13px;
+      border-radius: 50%;
+      background: transparent;
+      color: #8b8b96;
+      font-size: 23px;
       cursor: pointer;
-      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition:
+        background 0.15s ease,
+        transform 0.15s ease;
     }
 
-    .edit-btn {
-      background: #e0e7ff;
-      color: #4338ca;
+    .menu-btn:active {
+      background: #f3f0f7;
+      transform: scale(0.88);
     }
 
-    .delete-btn {
-      background: #fee2e2;
-      color: #b91c1c;
+    .note-menu {
+      position: absolute;
+      top: 40px;
+      right: 0;
+      width: 155px;
+      padding: 6px;
+      background:
+        rgba(255, 255, 255, 0.98);
+      border:
+        1px solid
+        rgba(0, 0, 0, 0.06);
+      border-radius: 16px;
+      box-shadow:
+        0 12px 35px
+        rgba(0, 0, 0, 0.14);
+      z-index: 50;
+      transform-origin: top right;
+      animation:
+        menuOpen 0.16s ease-out;
     }
 
+    .note-menu button {
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 11px 12px;
+      border-radius: 10px;
+      text-align: left;
+      font-family: inherit;
+      font-size: 14px;
+      color: #374151;
+      cursor: pointer;
+      transition:
+        background 0.15s ease,
+        transform 0.1s ease;
+    }
+
+    .note-menu button:active {
+      transform: scale(0.97);
+      background: #f5f3ff;
+    }
+
+    .note-menu .menu-delete-btn {
+      color: #dc2626;
+    }
+
+    @keyframes menuOpen {
+      from {
+        opacity: 0;
+        transform:
+          scale(0.94)
+          translateY(-4px);
+      }
+
+      to {
+        opacity: 1;
+        transform:
+          scale(1)
+          translateY(0);
+      }
+    }
+
+    /* ========== ADD BUTTON ========== */
+    .add-btn {
+      position: fixed;
+      bottom:
+        calc(
+          20px +
+          env(safe-area-inset-bottom)
+        );
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: none;
+      background:
+        linear-gradient(
+          135deg,
+          #a78bfa,
+          #ec4899
+        );
+      color: white;
+      font-size: 32px;
+      cursor: pointer;
+      box-shadow:
+        0 8px 25px
+        rgba(167, 139, 250, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .add-btn:active {
+      transform: scale(0.85);
+      box-shadow:
+        0 4px 15px
+        rgba(167, 139, 250, 0.4);
+    }
+
+    /* ========== EMPTY STATE ========== */
     .empty {
       text-align: center;
       color: #9ca3af;
       margin-top: 60px;
     }
 
-    .add-btn {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: none;
-      background: linear-gradient(135deg, #a78bfa, #ec4899);
-      color: white;
-      font-size: 32px;
-      cursor: pointer;
-      box-shadow: 0 8px 25px rgba(167, 139, 250, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* MODAL */
+    /* ========== NOTE MODAL ========== */
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.5);
+      background:
+        rgba(0, 0, 0, 0.5);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -351,7 +470,8 @@ header h1 {
       border-radius: 24px;
       width: 100%;
       max-width: 400px;
-      max-height: calc(100dvh - 40px);
+      max-height:
+        calc(100dvh - 40px);
       overflow-y: auto;
     }
 
@@ -372,20 +492,22 @@ header h1 {
     .modal-content textarea {
       width: 100%;
       padding: 12px;
-      border: 1px solid #e5e7eb;
+      border:
+        1px solid
+        #e5e7eb;
       border-radius: 12px;
       margin-bottom: 16px;
       font-size: 16px;
       font-family: inherit;
     }
 
-  .modal-content textarea {
-  resize: none;
-  overflow-y: hidden;
-  min-height: 120px;
-  max-height: 50vh;
-  line-height: 1.5;
-}
+    .modal-content textarea {
+      resize: none;
+      overflow-y: hidden;
+      min-height: 120px;
+      max-height: 50vh;
+      line-height: 1.5;
+    }
 
     .modal-actions {
       display: flex;
@@ -406,582 +528,523 @@ header h1 {
     }
 
     #save-btn {
-      background: linear-gradient(135deg, #a78bfa, #ec4899);
+      background:
+        linear-gradient(
+          135deg,
+          #a78bfa,
+          #ec4899
+        );
       color: white;
     }
-  
-  /* ========== Interactive Button Effects ========== */
-
-/* General press effect for all buttons */
-button {
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  user-select: none;
-}
-
-button:active {
-  transform: scale(0.92);
-}
-
-/* MOOD */
-
-.note-left-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.mood-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-
-  padding: 4px 9px;
-
-  border-radius: 999px;
-
-  background: #f5f3ff;
-
-  color: #6d28d9;
-
-  font-size: 11px;
-  font-weight: 600;
-
-  white-space: nowrap;
-}
-
-@media (max-width: 480px) {
-
-  .note-left-meta {
-    gap: 6px;
-  }
-
-  .mood-badge {
-    font-size: 10px;
-    padding: 4px 8px;
-  }
-
-}
-
-/* Floating + button special effect */
-.add-btn {
-  bottom: calc(20px + env(safe-area-inset-bottom));
-    right: 20px;
-    width: 60px;
-    height: 60px;
-  /* transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;*/
-}
-
-.add-btn:active {
-  transform: scale(0.85);
-  box-shadow: 0 4px 15px rgba(167, 139, 250, 0.4);
-}
-
-/* Unlock button */
-.phone button:active {
-  transform: scale(0.95);
-}
-
-/* Edit & Delete buttons */
-.edit-btn:active,
-.delete-btn:active {
-  transform: scale(0.9);
-}
-
-/* Modal buttons */
-.modal-actions button:active {
-  transform: scale(0.95);
-}
-
-/* Optional: small bounce when hovering (desktop) */
-@media (hover: hover) {
-  .add-btn:hover {
-    transform: scale(1.08);
-  }
-  
-  .edit-btn:hover,
-  .delete-btn:hover {
-    transform: scale(1.05);
-  }
-} 
-
-.note-meta {
-  display: flex;
-
-  align-items: center;
-  justify-content: flex-end;
-
-  gap: 7px;
-
-  flex-wrap: wrap;
-
-  text-align: right;
-}
-
-.note-meta small {
-  font-size: 11px;
-  color: #9ca3af;
-  white-space: nowrap;
-}
-
-.pinned-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: #7c3aed;
-  background: #f3e8ff;
-  padding: 4px 8px;
-  border-radius: 999px;
-}
-
-.pin-btn {
-  padding: 6px 14px;
-  border: none;
-  border-radius: 8px;
-  font-size: 13px;
-  cursor: pointer;
-  font-weight: 500;
-  background: #f3e8ff;
-  color: #7e22ce;
-}
-
-.pin-btn.pinned {
-  background: #ede9fe;
-  color: #6d28d9;
-}
-
-.pin-btn:active {
-  transform: scale(0.9);
-}
-
-@media (hover: hover) {
-  .pin-btn:hover {
-    transform: scale(1.05);
-  }
-}
-
-/* ========== NOTE MENU ========== */
-
-.note-top-right {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  margin-left: auto;
-}
-
-.note-menu-wrapper {
-  position: relative;
-}
-
-.menu-btn {
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 50%;
-  background: transparent;
-  color: #8b8b96;
-  font-size: 23px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background 0.15s ease,
-    transform 0.15s ease;
-}
-
-.menu-btn:active {
-  background: #f3f0f7;
-  transform: scale(0.88);
-}
-
-@media (hover: hover) {
-  .menu-btn:hover {
-    background: #f3f0f7;
-  }
-}
-
-.note-menu {
-  position: absolute;
-  top: 40px;
-  right: 0;
-  width: 155px;
-  padding: 6px;
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 16px;
-  box-shadow:
-    0 12px 35px rgba(0, 0, 0, 0.14);
-  z-index: 50;
-  transform-origin: top right;
-  animation: menuOpen 0.16s ease-out;
-}
-
-@keyframes menuOpen {
-
-  from {
-    opacity: 0;
-    transform:
-      scale(0.94)
-      translateY(-4px);
-  }
-
-  to {
-    opacity: 1;
-    transform:
-      scale(1)
-      translateY(0);
-  }
-}
-.note-menu button {
-  width: 100%;
-
-  border: none;
-
-  background: transparent;
-
-  padding: 11px 12px;
-
-  border-radius: 10px;
-
-  text-align: left;
-
-  font-family: inherit;
-
-  font-size: 14px;
-
-  color: #374151;
-
-  cursor: pointer;
-
-  transition:
-    background 0.15s ease,
-    transform 0.1s ease;
-}
-
-.note-menu button:active {
-  transform: scale(0.97);
-
-  background: #f5f3ff;
-}
-
-@media (hover: hover) {
-
-  .note-menu button:hover {
-    background: #f5f3ff;
-  }
-
-}
-
-.note-menu .menu-delete-btn {
-  color: #dc2626;
-}
-
-.note-meta {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  flex-wrap: wrap;
-  text-align: right;
-}
-
-@media (max-width: 480px) {
 
-  .note-header {
-    align-items: flex-start;
-  }
-
-  .note-meta small {
-    font-size: 11px;
-  }
-
-  .pinned-label {
-    font-size: 11px;
-  }
-
-}
-
-@media (max-width: 480px) {
-
-  .lock-screen {
-    padding:
-      calc(40px + env(safe-area-inset-top))
-      24px
-      calc(30px + env(safe-area-inset-bottom));
-
-    align-items: flex-start;
-  }
-
-  .phone {
-    max-width: none;
-
-    min-height:
-      calc(
-        100dvh
-        - 70px
-        - env(safe-area-inset-top)
-        - env(safe-area-inset-bottom)
-      );
-
-    background: transparent;
-
-    border-radius: 0;
-
-    box-shadow: none;
-
-    padding: 60px 0 20px;
-  }
-
-  .time {
-    font-size: 58px;
-  }
-
-}
-
-/* ========== IMAGE ATTACHMENTS ========== */
-
-.image-upload-section {
-  margin-bottom: 18px;
-}
-
-.image-upload-section > label:first-child {
-  display: block;
-  margin-bottom: 8px;
-}
-
-
-/* Hide ugly browser file input */
-#image-input {
-  display: none;
-}
-
-
-.image-picker-btn {
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-
-  padding: 10px 14px;
-
-  background: #f5f3ff;
-  color: #6d28d9;
-
-  border: 1px solid #ddd6fe;
-
-  border-radius: 12px;
-
-  font-size: 14px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.15s ease,
-    background 0.15s ease;
-}
-
-
-.image-picker-btn:active {
-  transform: scale(0.96);
-}
-
-
-.image-preview-container {
-  margin-top: 14px;
-}
-
-
-#image-preview {
-  display: block;
-
-  width: 100%;
-  max-height: 300px;
-
-  object-fit: cover;
-
-  border-radius: 16px;
-
-  margin-bottom: 10px;
-
-  box-shadow:
-    0 6px 20px rgba(0, 0, 0, 0.08);
-}
-
-
-#remove-image-btn {
-  border: none;
-
-  background: #fee2e2;
-  color: #b91c1c;
-
-  padding: 8px 12px;
-
-  border-radius: 9px;
-
-  font-size: 13px;
-  font-weight: 600;
-
-  cursor: pointer;
-}
-
-
-/* Image displayed inside saved note */
-
-.note-image {
-  display: block;
-
-  width: 100%;
-
-  max-height: 450px;
-
-  object-fit: cover;
-
-  border-radius: 16px;
-
-  margin-top: 14px;
-
-  box-shadow:
-    0 4px 18px rgba(0, 0, 0, 0.07);
-}
-
-
-/* iPhone */
-
-@media (max-width: 480px) {
-
-  .note-image {
-    max-height: 380px;
-    border-radius: 14px;
-  }
-
-  #image-preview {
-    max-height: 260px;
-  }
-
-}
+    /* ========== IMAGE ATTACHMENTS ========== */
+    .image-upload-section {
+      margin-bottom: 18px;
+    }
+    .image-upload-section > label:first-child {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    #image-input {
+      display: none;
+    }
+
+    .image-picker-btn {
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      background: #f5f3ff;
+      color: #6d28d9;
+      border:
+        1px solid
+        #ddd6fe;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition:
+        transform 0.15s ease,
+        background 0.15s ease;
+    }
+
+    .image-picker-btn:active {
+      transform: scale(0.96);
+    }
+
+    .image-preview-container {
+      margin-top: 14px;
+    }
+
+    #image-preview {
+      display: block;
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 16px;
+      margin-bottom: 10px;
+      box-shadow:
+        0 6px 20px
+        rgba(0, 0, 0, 0.08);
+    }
+
+    #remove-image-btn {
+      border: none;
+      background: #fee2e2;
+      color: #b91c1c;
+      padding: 8px 12px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .note-image {
+      display: block;
+      width: 100%;
+      max-height: 450px;
+      object-fit: cover;
+      border-radius: 16px;
+      margin-top: 14px;
+      cursor: zoom-in;
+      box-shadow:
+        0 4px 18px
+        rgba(0, 0, 0, 0.07);
+      transition:
+        transform 0.2s ease,
+        filter 0.2s ease;
+    }
+
+    /* ========== IMAGE LIGHTBOX ========== */
+    .image-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background:
+        rgba(10, 10, 12, 0.94);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding:
+        calc(
+          20px +
+          env(safe-area-inset-top)
+        )
+        20px
+        calc(
+          20px +
+          env(safe-area-inset-bottom)
+        );
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter:
+        blur(8px);
+      animation:
+        lightboxFadeIn
+        0.2s ease;
+    }
+
+    .lightbox-image {
+      display: block;
+      max-width: 95%;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 14px;
+      box-shadow:
+        0 20px 60px
+        rgba(0, 0, 0, 0.4);
+      animation:
+        lightboxImageIn
+        0.2s ease;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top:
+        calc(
+          16px +
+          env(safe-area-inset-top)
+        );
+      right: 18px;
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 50%;
+      background:
+        rgba(255, 255, 255, 0.14);
+      color: white;
+      font-size: 30px;
+      font-weight: 300;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .lightbox-close:active {
+      transform: scale(0.9);
+    }
+
+    @keyframes lightboxFadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes lightboxImageIn {
+      from {
+        opacity: 0;
+        transform:
+          scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform:
+          scale(1);
+      }
+    }
+
+    /* ========== BUTTON EFFECTS ========== */
+    button {
+      transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+      user-select: none;
+    }
+    button:active {
+      transform: scale(0.92);
+    }
+
+    /* ========== DESKTOP HOVER ========== */
+    @media (hover: hover) {
+      .note:hover {
+        transform:
+          translateY(-2px);
+        box-shadow:
+          0 4px 8px
+          rgba(76, 29, 149, 0.04),
+          0 12px 30px
+          rgba(76, 29, 149, 0.10);
+      }
+
+      .add-btn:hover {
+        transform:
+          scale(1.08);
+      }
+
+      .menu-btn:hover {
+        background:
+          #f3f0f7;
+      }
+
+      .note-menu button:hover {
+        background:
+          #f5f3ff;
+      }
+
+      .note-image:hover {
+        transform:
+          scale(1.01);
+        filter:
+          brightness(0.97);
+      }
+    }
+
+    /* ========== MOBILE ========== */
+    @media (max-width: 480px) {
+      .lock-screen {
+        padding:
+          calc(
+            40px +
+            env(safe-area-inset-top)
+          )
+          24px
+          calc(
+            30px +
+            env(safe-area-inset-bottom)
+          );
+        align-items: flex-start;
+      }
+
+      .phone {
+        max-width: none;
+        min-height:
+          calc(
+            100dvh
+            - 70px
+            - env(safe-area-inset-top)
+            - env(safe-area-inset-bottom)
+          );
+
+        background: transparent;
+        border-radius: 0;
+        box-shadow: none;
+        padding:
+          60px 0 20px;
+      }
+
+      .time {
+        font-size: 58px;
+      }
+
+      .note-header {
+        align-items: flex-start;
+      }
+      .note-left-meta {
+        gap: 6px;
+      }
+
+      .mood-badge {
+        font-size: 10px;
+        padding: 4px 8px;
+      }
+
+      .note-meta small,
+      .pinned-label {
+        font-size: 11px;
+      }
+
+      .note-image {
+        max-height: 380px;
+        border-radius: 14px;
+      }
+
+      #image-preview {
+        max-height: 260px;
+      }
+
+      .image-lightbox {
+        padding:
+          calc(
+            12px +
+            env(safe-area-inset-top)
+          )
+          10px
+          calc(
+            12px +
+            env(safe-area-inset-bottom)
+          );
+      }
+
+      .lightbox-image {
+        max-width: 100%;
+        max-height: 85vh;
+        border-radius: 10px;
+      }
+    }
 
   </style>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+  </script>
 </head>
+
 <body>
 
-  <!-- LOCK SCREEN -->
-<div id="lock-screen" class="lock-screen">
+  <!-- ========== LOCK SCREEN ========== -->
+  <div
+    id="lock-screen"
+    class="lock-screen">
+    <div class="phone">
+      <div
+        class="time"
+        id="time">
+      </div>
 
-  <div class="phone">
+      <div
+        class="lock-date"
+        id="lock-date">
+      </div>
 
-    <!-- Current time -->
-    <div class="time" id="time"></div>
+      <h1>
+        Enter Password
+      </h1>
 
-    <!-- Current date -->
-    <div class="lock-date" id="lock-date"></div>
+      <input
+        type="password"
+        id="password"
+        placeholder="••••"
+        maxlength="20"
+        autocomplete="current-password"
+        autofocus
+      >
 
-    <!-- Lock icon -->
-    <div class="lock-icon"></div>
+      <button
+        type="button"
+        id="unlock-btn">
+        Unlock
+      </button>
 
-    <h1>Enter Password</h1>
+      <p
+        id="error"
+        class="error">
+      </p>
 
-    <input
-      type="password"
-      id="password"
-      placeholder="••••"
-      maxlength="20"
-      autofocus
-    >
-
-    <button id="unlock-btn">
-      Unlock
-    </button>
-
-    <p id="error" class="error"></p>
+    </div>
 
   </div>
 
-</div>
-
-  <!-- NOTES SCREEN -->
-  <div id="notes-screen" class="hidden">
+  <!-- ========== NOTES SCREEN ========== -->
+  <div
+    id="notes-screen"
+    class="hidden">
     <div class="container">
       <header>
-        <h1>Our Notes ✉︎</h1>
-        <button id="logout">Lock</button>
+        <h1>
+          Our Notes ✉︎
+        </h1>
+        <button
+          type="button"
+          id="logout">
+          Lock
+        </button>
       </header>
 
       <div id="notes-list"></div>
+      <button
+        type="button"
+        id="add-note-btn"
+        class="add-btn"
+        aria-label="Add note">
+        +
+      </button>
 
-      <button id="add-note-btn" class="add-btn">+</button>
-
-      <div id="modal" class="modal hidden">
+      <!-- ========== ADD / EDIT NOTE MODAL ========== -->
+      <div
+        id="modal"
+        class="modal hidden">
         <div class="modal-content">
-          <h3 id="modal-title">Add a note</h3>
-          
-          <label for="author">Who wrote it?</label>
+          <h3 id="modal-title">
+            Add a note
+          </h3>
+          <label for="author">
+            Who wrote it?
+          </label>
           <select id="author">
-            <option value="You">You</option>
-            <option value="Him">Him</option>
+            <option value="You">
+              You
+            </option>
+            <option value="Him">
+              Him
+            </option>
           </select>
 
-          <label for="mood">How are you feeling?</label>
+          <label for="mood">
+            How are you feeling?
+          </label>
 
-<select id="mood">
-  <option value="">No mood</option>
-  <option value="Happy">😊 Happy</option>
-  <option value="Loved">🥰 Loved</option>
-  <option value="Stressed">😣 Stressed</option>
-  <option value="Mad">😠 Mad</option>
-  <option value="Sad">😢 Sad</option>
-  <option value="Annoyed">😒 Annoyed</option>
-  <option value="Proud">🥹 Proud</option>
-  <option value="Sleepy">😴 Sleepy</option>
-</select>
+          <select id="mood">
+            <option value="">
+              No mood
+            </option>
+            <option value="Happy">
+              😊 Happy
+            </option>
+            <option value="Loved">
+              🥰 Loved
+            </option>
+            <option value="Stressed">
+              😣 Stressed
+            </option>
+            <option value="Mad">
+              😠 Mad
+            </option>
+            <option value="Sad">
+              😢 Sad
+            </option>
+            <option value="Annoyed">
+              😒 Annoyed
+            </option>
+            <option value="Proud">
+              🥹 Proud
+            </option>
+            <option value="Sleepy">
+              😴 Sleepy
+            </option>
+          </select>
 
-<textarea id="note-content" placeholder="Leave a note..." rows="5"></textarea>
+          <textarea
+            id="note-content"
+            placeholder="Leave a note..."
+            rows="5">
+          </textarea>
 
-<div class="image-upload-section">
+          <!-- IMAGE ATTACHMENT -->
+          <div class="image-upload-section">
+            <label>
+              Attach a photo
+            </label>
+            <input
+              type="file"
+              id="image-input"
+              accept="image/*"
+            >
+            <label
+              for="image-input"
+              class="image-picker-btn">
+              📷 Choose Photo
+            </label>
 
-  <label>Attach a photo</label>
+            <div
+              id="image-preview-container"
+              class="image-preview-container hidden">
+              <img
+                id="image-preview"
+                alt="Selected photo preview"
+              >
 
-  <input
-    type="file"
-    id="image-input"
-    accept="image/*"
-  >
+              <button
+                type="button"
+                id="remove-image-btn">
+                Remove photo
+              </button>
 
-  <label
-    for="image-input"
-    class="image-picker-btn">
-    📷 Choose Photo
-  </label>
+            </div>
 
-  <div
-    id="image-preview-container"
-    class="image-preview-container hidden">
-
-    <img
-      id="image-preview"
-      alt="Selected photo preview"
-    >
-
-    <button
-      type="button"
-      id="remove-image-btn">
-      Remove photo
-    </button>
-
-  </div>
-
-</div>
+          </div>
 
           <div class="modal-actions">
-            <button id="cancel-btn">Cancel</button>
-            <button id="save-btn">Save</button>
+            <button
+              type="button"
+              id="cancel-btn">
+              Cancel
+            </button>
+            <button
+              type="button"
+              id="save-btn">
+              Save
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- ========== IMAGE FULLSCREEN PREVIEW ========== -->
+  <div
+    id="image-lightbox"
+    class="image-lightbox hidden">
+    <button
+      id="lightbox-close"
+      class="lightbox-close"
+      type="button"
+      aria-label="Close image">
+      ×
+    </button>
+    <img
+      id="lightbox-image"
+      class="lightbox-image"
+      alt="Full size note attachment"
+    >
+  </div>
   <script src="app.js"></script>
 </body>
 </html>
