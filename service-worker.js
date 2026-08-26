@@ -2,7 +2,7 @@
 self.addEventListener('push', (event) => {
 
   let data = {
-    title: 'Our Notes ✉︎',
+   // title: 'Our Notes ✉︎',
     body: 'You received a new note 💌'
   };
 
