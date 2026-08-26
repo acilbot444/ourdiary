@@ -11,6 +11,8 @@ const IMAGE_BUCKET =
   'note-images';
 const MAX_IMAGE_SIZE =
   5 * 1024 * 1024;
+const VAPID_PUBLIC_KEY =
+  'BHJcHOXBXnkpFhm_sV9GZRcWCYAs8wZDChRFeLTlgcQA9m58mu6gwSVnIcAumjlbhKD3q2zm2XJZnAIeyKtr2W0';
 const supabaseClient =
   window.supabase.createClient(
     SUPABASE_URL,
@@ -53,25 +55,32 @@ const imageInput =
 const imagePreview =
   document.getElementById('image-preview');
 const imagePreviewContainer =
-  document.getElementById(
-    'image-preview-container'
-  );
+document.getElementById('image-preview-container');
 const removeImageBtn =
-  document.getElementById(
-    'remove-image-btn'
-  );
+  document.getElementById('remove-image-btn');
 const imageLightbox =
-  document.getElementById(
-    'image-lightbox'
-  );
+  document.getElementById('image-lightbox');
 const lightboxImage =
-  document.getElementById(
-    'lightbox-image'
-  );
+  document.getElementById('lightbox-image');
 const lightboxClose =
-  document.getElementById(
-    'lightbox-close'
-  );
+  document.getElementById('lightbox-close');
+
+  // ========== NOTIFICATION ELEMENTS ==========
+
+const notificationBtn =
+  document.getElementById('notification-btn');
+
+const notificationModal =
+  document.getElementById('notification-modal');
+
+const deviceOwnerSelect =
+  document.getElementById('device-owner');
+
+const enableNotificationsBtn =
+  document.getElementById('enable-notifications-btn');
+
+const notificationCancelBtn =
+  document.getElementById('notification-cancel-btn');
 
 // ========== STATE ==========
 let currentPassword = '';
@@ -1333,3 +1342,224 @@ document.addEventListener(
     }
   }
 );
+
+// ========== PUSH NOTIFICATIONS ==========
+
+function urlBase64ToUint8Array(base64String) {
+  const padding =
+    '='.repeat(
+      (4 - base64String.length % 4) % 4
+    );
+
+  const base64 =
+    (base64String + padding)
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+
+  const rawData =
+    window.atob(base64);
+
+  return Uint8Array.from(
+    [...rawData].map(
+      (character) =>
+        character.charCodeAt(0)
+    )
+  );
+}
+
+
+// ========== REGISTER SERVICE WORKER ==========
+
+async function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) {
+    throw new Error(
+      'Service workers are not supported on this browser.'
+    );
+  }
+
+  const registration =
+    await navigator.serviceWorker.register(
+      './service-worker.js'
+    );
+
+  await navigator.serviceWorker.ready;
+
+  return registration;
+}
+
+
+// ========== ENABLE NOTIFICATIONS ==========
+
+async function enablePushNotifications() {
+  if (!deviceOwnerSelect) {
+    return;
+  }
+
+  if (
+    !('Notification' in window) ||
+    !('PushManager' in window)
+  ) {
+    alert(
+      'Push notifications are not supported on this browser.'
+    );
+
+    return;
+  }
+
+  const owner =
+    deviceOwnerSelect.value;
+
+  enableNotificationsBtn.disabled =
+    true;
+
+  enableNotificationsBtn.textContent =
+    'Enabling...';
+
+  try {
+    const permission =
+      await Notification.requestPermission();
+
+    if (permission !== 'granted') {
+      throw new Error(
+        'Notification permission was not granted.'
+      );
+    }
+
+    const registration =
+      await registerServiceWorker();
+
+    let subscription =
+      await registration
+        .pushManager
+        .getSubscription();
+
+    if (!subscription) {
+      subscription =
+        await registration
+          .pushManager
+          .subscribe({
+            userVisibleOnly: true,
+
+            applicationServerKey:
+              urlBase64ToUint8Array(
+                VAPID_PUBLIC_KEY
+              )
+          });
+    }
+
+    const subscriptionJson =
+      subscription.toJSON();
+
+    if (
+      !subscriptionJson.endpoint ||
+      !subscriptionJson.keys?.p256dh ||
+      !subscriptionJson.keys?.auth
+    ) {
+      throw new Error(
+        'Invalid push subscription.'
+      );
+    }
+
+    await callNotesApi(
+      'save-push-subscription',
+      {
+        owner,
+
+        subscription: {
+          endpoint:
+            subscriptionJson.endpoint,
+
+          keys: {
+            p256dh:
+              subscriptionJson
+                .keys
+                .p256dh,
+
+            auth:
+              subscriptionJson
+                .keys
+                .auth
+          }
+        }
+      }
+    );
+
+    notificationModal.classList.add(
+      'hidden'
+    );
+
+    alert(
+      `Notifications enabled for ${owner} 🔔`
+    );
+
+  } catch (error) {
+    console.error(
+      'Notification setup error:',
+      error
+    );
+
+    alert(
+      'Could not enable notifications: ' +
+      error.message
+    );
+
+  } finally {
+    enableNotificationsBtn.disabled =
+      false;
+
+    enableNotificationsBtn.textContent =
+      'Enable';
+  }
+}
+
+
+// ========== NOTIFICATION BUTTON ==========
+
+if (notificationBtn) {
+  notificationBtn.addEventListener(
+    'click',
+    () => {
+      notificationModal.classList.remove(
+        'hidden'
+      );
+    }
+  );
+}
+
+
+// ========== NOTIFICATION CANCEL ==========
+
+if (notificationCancelBtn) {
+  notificationCancelBtn.addEventListener(
+    'click',
+    () => {
+      notificationModal.classList.add(
+        'hidden'
+      );
+    }
+  );
+}
+
+
+// ========== ENABLE BUTTON ==========
+
+if (enableNotificationsBtn) {
+  enableNotificationsBtn.addEventListener(
+    'click',
+    enablePushNotifications
+  );
+}
+
+
+// ========== REGISTER WORKER ON LOAD ==========
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register(
+    './service-worker.js'
+  ).catch((error) => {
+    console.error(
+      'Service worker registration error:',
+      error
+    );
+  });
+}
