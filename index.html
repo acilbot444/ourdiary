@@ -6,6 +6,8 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   >
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#633ca6">
 
   <title>Our Notes 💌</title>
 
@@ -616,6 +618,27 @@
         filter 0.2s ease;
     }
 
+.notification-description {
+  margin-bottom: 20px;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#notification-cancel-btn {
+  background: #f3f4f6;
+}
+
+#enable-notifications-btn {
+  background:
+    linear-gradient(
+      135deg,
+      #a78bfa,
+      #ec4899
+    );
+  color: white;
+}
+
     /* ========== IMAGE LIGHTBOX ========== */
     .image-lightbox {
       position: fixed;
@@ -756,6 +779,32 @@
           brightness(0.97);
       }
     }
+
+
+/* ========== HEADER ACTIONS ========== */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#notification-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#notification-btn:active {
+  transform: scale(0.92);
+}
 
     /* ========== MOBILE ========== */
     @media (max-width: 480px) {
@@ -898,15 +947,25 @@
     class="hidden">
     <div class="container">
       <header>
-        <h1>
-          Our Notes ✉︎
-        </h1>
-        <button
-          type="button"
-          id="logout">
-          Lock
-        </button>
-      </header>
+      <h1>
+      Our Notes ✉︎
+      </h1>
+
+    <div class="header-actions">
+
+    <button
+      type="button"
+      id="notification-btn"
+      aria-label="Notification settings">  🔔
+    </button>
+
+    <button
+      type="button"
+      id="logout">
+      Lock
+    </button>
+  </div>
+</header>
 
       <div id="notes-list"></div>
       <button
@@ -1027,6 +1086,50 @@
       </div>
     </div>
   </div>
+
+<!-- ========== NOTIFICATION MODAL ========== -->
+<div
+  id="notification-modal"
+  class="modal hidden">
+  <div class="modal-content">
+    <h3>
+      Notifications 🔔
+    </h3>
+    <p class="notification-description">
+      Get notified when a new note is left.
+    </p>
+
+    <label for="device-owner">
+      This device belongs to
+    </label>
+    
+    <select id="device-owner">
+
+      <option value="You">
+        You
+      </option>
+
+      <option value="Him">
+        Him
+      </option>
+
+    </select>
+
+    <div class="modal-actions">
+      <button
+        type="button"
+        id="notification-cancel-btn">
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        id="enable-notifications-btn">
+        Enable
+      </button>
+    </div>
+  </div>
+</div>
 
   <!-- ========== IMAGE FULLSCREEN PREVIEW ========== -->
   <div
